@@ -34,3 +34,18 @@ GOOGLE_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
 ```
 
 The backend audience must match the `GOOGLE_SERVER_CLIENT_ID` used by the Flutter Android/iOS builds and the `GOOGLE_CLIENT_ID` used by Flutter web.
+
+## Production deployment (Contabo VPS)
+
+- Live API: `https://nyetam.duckdns.org` (Swagger: `/docs`)
+- PM2 process `nyetam-api` runs uvicorn on `127.0.0.1:8020` (port 8010 and others are used by other apps); nginx proxies the domain to it.
+- Config files: `deploy/ecosystem.config.js` and `deploy/nginx-nyetam.conf`.
+- Update flow on the server:
+
+```bash
+cd ~/mboa-backend && git pull
+.venv/bin/pip install -r requirements.txt
+pm2 restart nyetam-api --update-env
+```
+
+Local development is unchanged: `python -m uvicorn app.main:app --reload` on port 8000.
